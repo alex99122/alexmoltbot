@@ -1,6 +1,3 @@
-#!/bin/bash
-# Startup script for Moltbot in Cloudflare Sandbox
-# This script:
 # 1. Restores config from R2 backup if available
 # 2. Configures moltbot from environment variables
 # 3. Starts a background sync to backup config to R2
@@ -247,13 +244,13 @@ if (isOpenAI) {
             { id: 'claude-opus-4-5-20251101', name: 'Claude Opus 4.5', contextWindow: 200000 },
             { id: 'claude-sonnet-4-5-20250929', name: 'Claude Sonnet 4.5', contextWindow: 200000 },
             { id: 'claude-haiku-4-5-20251001', name: 'Claude Haiku 4.5', contextWindow: 200000 },
+            { id: 'claude-3-5-sonnet-20241022', name: 'Claude 3.5 Sonnet', contextWindow: 200000 },
+            { id: 'claude-3-haiku-20250307', name: 'Claude 3 Haiku', contextWindow: 200000 },
+            { id: 'claude-opus', name: 'Claude Opus', contextWindow: 200000 },
         ]
     };
     // Include API key in provider config if set (required when using custom baseUrl)
     if (process.env.ANTHROPIC_API_KEY) {
-                { id: 'claude-3-5-sonnet-20241022', name: 'Claude 3.5 Sonnet', contextWindow: 200000 },
-                            { id: 'claude-3-haiku-20250307', name: 'Claude 3 Haiku', contextWindow: 200000 },
-                                        { id: 'claude-opus', name: 'Claude Opus', contextWindow: 200000 },
         providerConfig.apiKey = process.env.ANTHROPIC_API_KEY;
     }
     config.models.providers.anthropic = providerConfig;
