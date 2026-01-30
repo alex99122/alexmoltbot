@@ -251,6 +251,9 @@ if (isOpenAI) {
     };
     // Include API key in provider config if set (required when using custom baseUrl)
     if (process.env.ANTHROPIC_API_KEY) {
+                { id: 'claude-3-5-sonnet-20241022', name: 'Claude 3.5 Sonnet', contextWindow: 200000 },
+                            { id: 'claude-3-haiku-20250307', name: 'Claude 3 Haiku', contextWindow: 200000 },
+                                        { id: 'claude-opus', name: 'Claude Opus', contextWindow: 200000 },
         providerConfig.apiKey = process.env.ANTHROPIC_API_KEY;
     }
     config.models.providers.anthropic = providerConfig;
@@ -263,6 +266,9 @@ if (isOpenAI) {
 } else {
     // Default to Anthropic without custom base URL (uses built-in pi-ai catalog)
     config.agents.defaults.model.primary = 'anthropic/claude-opus-4-5';
+     config.agents.defaults.models['anthropic/claude-3-5-sonnet-20241022'] = { alias: 'Sonnet 3.5' };
+      config.agents.defaults.models['anthropic/claude-3-haiku-20250307'] = { alias: 'Haiku 3' };
+       config.agents.defaults.models['anthropic/claude-opus'] = { alias: 'Opus' };
 }
 
 // Write updated config
