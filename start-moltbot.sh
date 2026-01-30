@@ -1,3 +1,6 @@
+#!/bin/bash
+# Startup script for Moltbot in Cloudflare Sandbox
+# This script:
 # 1. Restores config from R2 backup if available
 # 2. Configures moltbot from environment variables
 # 3. Starts a background sync to backup config to R2
@@ -209,7 +212,7 @@ if (process.env.SLACK_BOT_TOKEN && process.env.SLACK_APP_TOKEN) {
 // Usage: Set AI_GATEWAY_BASE_URL or ANTHROPIC_BASE_URL to your endpoint like:
 //   https://gateway.ai.cloudflare.com/v1/{account_id}/{gateway_id}/anthropic
 //   https://gateway.ai.cloudflare.com/v1/{account_id}/{gateway_id}/openai
-const baseUrl = process.env.AI_GATEWAY_BASE_URL || process.env.ANTHROPIC_BASE_URL || '';
+const baseUrl = (process.env.AI_GATEWAY_BASE_URL || process.env.ANTHROPIC_BASE_URL || '').replace(/\/+$/, '');
 const isOpenAI = baseUrl.endsWith('/openai');
 
 if (isOpenAI) {
@@ -244,9 +247,6 @@ if (isOpenAI) {
             { id: 'claude-opus-4-5-20251101', name: 'Claude Opus 4.5', contextWindow: 200000 },
             { id: 'claude-sonnet-4-5-20250929', name: 'Claude Sonnet 4.5', contextWindow: 200000 },
             { id: 'claude-haiku-4-5-20251001', name: 'Claude Haiku 4.5', contextWindow: 200000 },
-            { id: 'claude-3-5-sonnet-20241022', name: 'Claude 3.5 Sonnet', contextWindow: 200000 },
-            { id: 'claude-3-haiku-20250307', name: 'Claude 3 Haiku', contextWindow: 200000 },
-            { id: 'claude-opus', name: 'Claude Opus', contextWindow: 200000 },
         ]
     };
     // Include API key in provider config if set (required when using custom baseUrl)
@@ -262,10 +262,13 @@ if (isOpenAI) {
     config.agents.defaults.model.primary = 'anthropic/claude-opus-4-5-20251101';
 } else {
     // Default to Anthropic without custom base URL (uses built-in pi-ai catalog)
-    config.agents.defaults.model.primary = 'anthropic/claude-opus-4-5';
-     config.agents.defaults.models['anthropic/claude-3-5-sonnet-20241022'] = { alias: 'Sonnet 3.5' };
-      config.agents.defaults.models['anthropic/claude-3-haiku-20250307'] = { alias: 'Haiku 3' };
-       config.agents.defaults.models['anthropic/claude-opus'] = { alias: 'Opus' };
+    config.models.providers.anthropic = providerConfig;
+    // Add models to the allowlist so they appear in /models
+    config.agents.defaults.models = config.agents.defaults.models || {};
+    config.agents.defaults.models['anthropic/claude-opus-4-5-20251101'] = { alias: 'Opus 4.5' };
+    config.agents.defaults.models['anthropic/claude-sonnet-4-5-20250929'] = { alias: 'Sonnet 4.5' };
+    config.agents.defaults.models['anthropic/claude-haiku-4-5-20251001'] = { alias: 'Haiku 4.5' };
+    config.agents.defaults.model.primary = 'anthropic/claude-opus-4-5-20251101';
 }
 
 // Write updated config
